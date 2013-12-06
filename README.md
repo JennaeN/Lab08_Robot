@@ -59,12 +59,111 @@ Grading
 ----------
 
 Item 	Grade 	Points 	Out of 	Date 	Due
+
 Prelab 	On-Time: 0 ---- Check Minus ---- Check ---- Check Plus 		10 		BOC L38
+
 Required Functionality 	On-Time ------------------------------------------------------------------ Late: 1Day ---- 2Days ---- 3Days ---- 4+Days 		40 		COB L40
+
 B Functionality 	On-Time ------------------------------------------------------------------ Late: 1Day ---- 2Days ---- 3Days ---- 4+Days 		10 		COB L40
+
 A Functionality 	On-Time ------------------------------------------------------------------ Late: 1Day ---- 2Days ---- 3Days ---- 4+Days 		10 		COB L40
+
 Bonus Functionality 	On-Time -------------------------------------------------------------- Late: 1Day ---- 2Days ---- 3Days ---- 4+Days 		10 		COB L40
+
 Use of Git / Github 	On-Time: 0 ---- Check Minus ---- Check ---- Check Plus ---- Late: 1Day ---- 2Days ---- 3Days ---- 4+Days 		10 		COB L40
+
 Code Style 	On-Time: 0 ---- Check Minus ---- Check ---- Check Plus ---- Late: 1Day ---- 2Days ---- 3Days ---- 4+Days 		10 		COB L40
+
 README 	On-Time: 0 ---- Check Minus ---- Check ---- Check Plus ---- Late: 1Day ---- 2Days ---- 3Days ---- 4+Days 		10 		COB L40
+
 Total 			100 	
+
+
+
+
+
+DESIGN
+-----------
+
+My robot will be set up to use the front (center) sensor. When it detects a wall it will turn (pre-programmed turn) the direction needed to get through the maze.  
+
+Basically, my robot will go straight until it senses a wall, turn left, go straight until a wall, turn right, go straight, turn right, sense wall, turn left, and it will have completed the maze. 
+
+The code I will use to implement this may be found in my Lab07_Interface and Lab06_Library.
+I will use the code from Lab06 to go straight, and will make it go straight until a 1 is detected from my Lab_07 code.
+
+Go stright until wall is detected ~ 
+if (direction == 1) {
+                //to move forward
+                TA0CCTL1 |= OUTMOD_7; // set to Reset / Set mode
+                TA0CCTL0 |= OUTMOD_5;                        //set to Reset
+                TA1CCTL1 |= OUTMOD_7;                        // set to Reset / Set mode
+                TA1CCTL0 |= OUTMOD_5;                        //set to Reset
+}
+
+  void senseCenter() {
+        ADC10CTL0 &= ~ENC; // Sampling and conversion stop
+        ADC10CTL1 = INCH_3;                                                //input channel A3
+        ADC10AE0 |= BIT3;                                                        // PA.1 ADC option select
+
+char IsCenterHighLow(int threshhold) {
+        if (ADC10MEM < threshhold) {
+                return 0;
+        } else {
+                return 3;
+        }
+
+
+Turn left and then go straight~
+ 
+         else if (direction == 3) {
+                //to move left
+                TA0CCTL1 |= OUTMOD_7; // set to Reset / Set mode
+                TA0CCTL0 |= OUTMOD_5;                        //set to Reset
+                TA1CCTL1 |= OUTMOD_5;                        //set to Reset
+                TA1CCTL0 |= OUTMOD_4;                        //set to Toggle
+        
+    if (direction == 1) {
+                //to move forward
+                TA0CCTL1 |= OUTMOD_7; // set to Reset / Set mode
+                TA0CCTL0 |= OUTMOD_5;                        //set to Reset
+                TA1CCTL1 |= OUTMOD_7;                        // set to Reset / Set mode
+                TA1CCTL0 |= OUTMOD_5;                        //set to Reset
+}    
+
+  void senseCenter() {
+        ADC10CTL0 &= ~ENC; // Sampling and conversion stop
+        ADC10CTL1 = INCH_3;                                                //input channel A3
+        ADC10AE0 |= BIT3;                                                        // PA.1 ADC option select
+
+char IsCenterHighLow(int threshhold) {
+        if (ADC10MEM < threshhold) {
+                return 0;
+        } else {
+                return 3;
+    
+    }    }
+
+Turn right and then go straigt~
+     else {
+                //to move right
+                TA0CCTL1 |= OUTMOD_5; // set to Reset
+                TA0CCTL0 |= OUTMOD_4;                        //set to Toggle
+                TA1CCTL1 |= OUTMOD_7;                        // set to Reset / Set mode
+                TA1CCTL0 |= OUTMOD_5;                        // set to Reset
+      }
+
+   void senseCenter() {
+        ADC10CTL0 &= ~ENC; // Sampling and conversion stop
+        ADC10CTL1 = INCH_3;                                                //input channel A3
+        ADC10AE0 |= BIT3;                                                        // PA.1 ADC option select
+
+char IsCenterHighLow(int threshhold) {
+        if (ADC10MEM < threshhold) {
+                return 0;
+        } else {
+                return 3;
+    
+    }    }
+
+  
