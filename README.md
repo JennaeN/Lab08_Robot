@@ -167,3 +167,22 @@ char IsCenterHighLow(int threshhold) {
     }    }
 
   
+  
+  OUTCOMES
+  ------------------
+  
+  I changed the entire algorithm for my robot. Originally, I thought it would be easiest to just preprogram everything. In the end, I found out that is the harder way to do it. Plus, it didn't get me additional functionality. So, why not just go for additional from the beginning, right?
+  
+  What algorithm was next? I decided to use a walking algorithm that would hug the left wall. I would make the robot walk by changing the duty cycle for each motor when I wanted to go forward. After quite a bit of testing, I found that this algorithm just wasn't making the sharp turns that I needed.
+  
+  Now what? A robot that would for the most part go straight along the left wall and make tight turns. I didn't want my robot to run into the wall while it was going straight - obstacle number one. I decided that the duty cycles for the motors still couldn't be exactly the same. They needed to be ever so slightly off so that my robot would always move away from the wall, not towards it. 
+  Obstacle number two - if the robot got too far, I needed to turn back into the wall. 
+  Obstacle number three - running into corners.
+  
+  To account for all of these obstacles, I needed 3 while loops. The first while  loop for when the robot sensed nothing. The second for when the robot only sensed a left wall. The third for when the robot sensed something in front of it. 
+  
+  The first while loop made the robot turn left towards the wall. When it could sense the wall again, it would jump into the second while loop and start going straight while it sensed the wall to its left. When it ran into a corner, it would turn right until it could no longer sense the corner.
+  
+  Last, I had to change where the sensors were pointing. Originally, I had them pointing at right angles, but I found that this wasn't efficient. When the robot sensed the end of the left wall, it wasn't sensing it soon enough, so it would get to far away from the wall by the time it turned. I decided to make that sensor point more forward. Then, the robot wasn't completely finishing the right turns it was making. I decided to point that sensor further toward the left sensor, that way it would drive farther away from the wall, instead of closer.
+  
+  Robot Bender? Working.
