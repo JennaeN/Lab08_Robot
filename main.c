@@ -41,64 +41,52 @@ int main(void) {
 	TA1CTL |= TASSEL1;           // configure for SMCLK
 
 	TA0CCR0 = 100;  // set signal period to 100 clock cycles (~100 microseconds)
-	TA0CCR1 = 60;                // set duty cycle to 60/100 (60%)
+	TA0CCR1 = 54;                // set duty cycle to 60/100 (60%)
 
 	TA1CCR0 = 100;
-	TA1CCR1 = 60;
+	TA1CCR1 = 50;
 
 	TA0CTL |= MC0;                // count up
 	TA1CTL |= MC0;
 
+	char frontSensor = 0;
+	char leftSensor = 0;
+
 	while (1) {
 
-		char frontSensor = 0;
-		char rightSensor = 0;
-		char leftSensor = 0;
+		while (frontSensor == 0 && leftSensor == 0) {
 
-		while (frontSensor == 0) {
-			motion(FORWARD);
-
-			ADC10CTL0 |= ENC + ADC10SC;         // Sampling and conversion start
-			__bis_SR_register(CPUOFF + GIE);
-			// LPM0, ADC10_ISR will force exit
-			frontSensor = IsCenterHighLow(0x322);
-		}
-
-		TA0CCTL1 &= ~OUTMOD_7;        //clear
-		TA0CCTL0 &= ~OUTMOD_7;
-		TA1CCTL1 &= ~OUTMOD_7;
-		TA1CCTL0 &= ~OUTMOD_7;
-
-		while (rightSensor == 0 && leftSensor == 0) {
-
-			senseRight();
-
-			ADC10CTL0 |= ENC + ADC10SC;         // Sampling and conversion start
-			__bis_SR_register(CPUOFF + GIE);
-			// LPM0, ADC10_ISR will force exit
-
-			rightSensor = IsRightHighLow(0x2FF);
+			motion(LEFT);
 
 			senseLeft();
-
-			ADC10CTL0 |= ENC + ADC10SC;         // Sampling and conversion start
-			__bis_SR_register(CPUOFF + GIE);
-			// LPM0, ADC10_ISR will force exit
-
 			leftSensor = IsLeftHighLow(0x2FF);
+
+			senseCenter();
+			frontSensor = IsCenterHighLow(0x2CF);
+
 		}
 
-		if (rightSensor > 0) {
+		while (frontSensor == 0 && leftSensor != 0) {
+
+			motion(FORWARD);
+
+			senseLeft();
+			leftSensor = IsLeftHighLow(0x2FF);
+
+			senseCenter();
+			frontSensor = IsCenterHighLow(0x2CF);
+
+		}
+
+		while (frontSensor != 0) {
+
 			motion(RIGHT);
-			__delay_cycles(500000);
-		}
 
-		else {
-			motion(LEFT);
-			__delay_cycles(500000);
+			senseCenter();
+			frontSensor = IsCenterHighLow(0x2CF);
 		}
-
 	}
+
 	return 0;
 }
 
@@ -106,5 +94,5 @@ int main(void) {
 #pragma vector=ADC10_VECTOR
 __interrupt void ADC10_ISR(void) {
 	__bic_SR_register_on_exit(CPUOFF);
-	// Clear CPUOFF bit from 0(SR)
+// Clear CPUOFF bit from 0(SR)
 }
